@@ -3,16 +3,89 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://cdn.tailwindcss.com https://www.gstatic.com https://cdnjs.cloudflare.com blob:; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://www.gstatic.com https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://cdnjs.cloudflare.com; object-src blob:; img-src 'self' data:;">
+    <link rel="icon" type="image/svg+xml" href="/img/favicon.svg">
+    <link rel="icon" type="image/png" href="/img/favicon.png">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="Permissions-Policy" content="interest-cohort=()">
+    <meta name="referrer" content="no-referrer">
+    <meta name="robots" content="noindex, nofollow">
     <title>Synapse Learn</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.x.x/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.x.x/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.x.x/firebase-storage-compat.js"></script>
+    <!-- PDF.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+    <script>pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';</script>
+    <style>
+        /* Enhanced Protection Styles */
+        body {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            -webkit-touch-callout: none;
+            -webkit-text-size-adjust: none;
+        }
+        /* Prevent text selection and copying */
+        * {
+            -webkit-user-select: none !important;
+            -moz-user-select: none !important;
+            -ms-user-select: none !important;
+            user-select: none !important;
+        }
+        /* Allow input field selection */
+        input, textarea {
+            -webkit-user-select: text !important;
+            -moz-user-select: text !important;
+            -ms-user-select: text !important;
+            user-select: text !important;
+        }
+        /* Anti-debugging measures */
+        body * {
+            visibility: visible !important;
+        }
+        @media print { 
+            body { display: none; } 
+        }
+    </style>
 </head>
 <body class="bg-gray-50 font-sans antialiased">
     <!-- Header -->
     <header class="bg-white shadow-sm">
-        <nav class="max-w-7xl mx-auto px-4 py-3">
+        <nav class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
             <h1 class="text-xl font-bold">Synapse Learn</h1>
+            <div class="flex items-center space-x-4">
+                <button id="signInBtn" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">Sign In</button>
+                <button id="signOutBtn" class="hidden px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700">Sign Out</button>
+                <span id="userEmail" class="hidden text-gray-600"></span>
+            </div>
         </nav>
     </header>
+
+    <!-- Sign In Modal -->
+    <div id="signInModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+        <div class="bg-white p-8 rounded-lg shadow-xl max-w-md w-full">
+            <h2 class="text-2xl font-bold mb-6">Sign In</h2>
+            <form id="signInForm" class="space-y-4">
+                <div>
+                    <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                    <input type="email" id="email" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" required>
+                </div>
+                <div>
+                    <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+                    <input type="password" id="password" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" required>
+                </div>
+                <div class="flex justify-between">
+                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">Sign In</button>
+                    <button type="button" id="closeModal" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
     <main>
         <!-- Hero Section -->
@@ -25,6 +98,50 @@
         <section class="py-12 bg-white">
             <div class="max-w-7xl mx-auto px-4">
                 <h2 class="text-3xl font-bold mb-8 text-center">Available KSSM Textbooks</h2>
+                <div class="mb-8 text-center">
+                    <button onclick="showEbook('form4')" class="mx-2 px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">View Form 4 E-Books</button>
+                    <button onclick="showEbook('form5')" class="mx-2 px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">View Form 5 E-Books</button>
+                </div>
+                <!-- E-Book Preview Modal -->
+                <div id="ebookModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+                    <div class="bg-white p-6 rounded-lg shadow-xl w-full max-w-4xl">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-2xl font-bold" id="ebookTitle">E-Book Preview</h3>
+                            <button onclick="closeEbook()" class="text-gray-500 hover:text-gray-700">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-4" id="ebookGrid">
+                            <!-- E-books will be dynamically populated here -->
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- PDF Viewer Modal -->
+                <div id="pdfModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+                    <div class="bg-white p-6 rounded-lg shadow-xl w-full h-full max-w-6xl max-h-[90vh] flex flex-col">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-2xl font-bold" id="pdfTitle">PDF Viewer</h3>
+                            <div class="flex items-center space-x-4">
+                                <div class="flex items-center">
+                                    <button id="prevPage" class="px-3 py-1 bg-blue-500 text-white rounded-l hover:bg-blue-600">Previous</button>
+                                    <span id="pageInfo" class="px-4 py-1 bg-gray-100">Page: <span id="pageNum">1</span> / <span id="pageCount">1</span></span>
+                                    <button id="nextPage" class="px-3 py-1 bg-blue-500 text-white rounded-r hover:bg-blue-600">Next</button>
+                                </div>
+                                <button onclick="closePdf()" class="text-gray-500 hover:text-gray-700">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="flex-1 overflow-auto bg-gray-100 rounded">
+                            <canvas id="pdfViewer" class="mx-auto"></canvas>
+                        </div>
+                    </div>
+                </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <!-- Form 4 Section -->
                     <div class="bg-gray-50 p-6 rounded-lg shadow-md">
@@ -86,7 +203,23 @@
         <section class="py-12">
             <div class="max-w-7xl mx-auto px-4">
                 <h2 class="text-3xl font-bold mb-8 text-center">How It Works</h2>
-                <!-- Add steps here -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="text-center p-6">
+                        <div class="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center text-white text-2xl mx-auto mb-4">1</div>
+                        <h3 class="text-xl font-semibold mb-2">Sign Up</h3>
+                        <p class="text-gray-600">Create your account to access all KSSM textbooks and materials</p>
+                    </div>
+                    <div class="text-center p-6">
+                        <div class="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center text-white text-2xl mx-auto mb-4">2</div>
+                        <h3 class="text-xl font-semibold mb-2">Choose Your Stream</h3>
+                        <p class="text-gray-600">Select between Science or Arts stream for your form level</p>
+                    </div>
+                    <div class="text-center p-6">
+                        <div class="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center text-white text-2xl mx-auto mb-4">3</div>
+                        <h3 class="text-xl font-semibold mb-2">Start Learning</h3>
+                        <p class="text-gray-600">Access your textbooks and begin your learning journey</p>
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -94,15 +227,95 @@
         <section class="py-12 bg-white">
             <div class="max-w-7xl mx-auto px-4">
                 <h2 class="text-3xl font-bold mb-8 text-center">Your Learning Plan</h2>
-                <!-- Add plan content here -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="bg-gray-50 p-6 rounded-lg shadow-md">
+                        <h3 class="text-2xl font-semibold mb-4">Daily Schedule</h3>
+                        <div class="space-y-4">
+                            <div class="flex items-center p-3 bg-white rounded border">
+                                <span class="w-24 text-sm font-medium">8:00 AM</span>
+                                <span class="flex-1">Mathematics</span>
+                                <button onclick="startLesson('Mathematics')" class="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600">Start</button>
+                            </div>
+                            <div class="flex items-center p-3 bg-white rounded border">
+                                <span class="w-24 text-sm font-medium">10:00 AM</span>
+                                <span class="flex-1">Physics</span>
+                                <button onclick="startLesson('Physics')" class="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600">Start</button>
+                            </div>
+                            <div class="flex items-center p-3 bg-white rounded border">
+                                <span class="w-24 text-sm font-medium">2:00 PM</span>
+                                <span class="flex-1">Chemistry</span>
+                                <button onclick="startLesson('Chemistry')" class="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600">Start</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-gray-50 p-6 rounded-lg shadow-md">
+                        <h3 class="text-2xl font-semibold mb-4">Progress Overview</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <div class="flex justify-between mb-1">
+                                    <span class="text-sm font-medium">Mathematics</span>
+                                    <span class="text-sm font-medium">75%</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-2">
+                                    <div class="bg-blue-600 h-2 rounded-full" style="width: 75%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between mb-1">
+                                    <span class="text-sm font-medium">Physics</span>
+                                    <span class="text-sm font-medium">60%</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-2">
+                                    <div class="bg-blue-600 h-2 rounded-full" style="width: 60%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between mb-1">
+                                    <span class="text-sm font-medium">Chemistry</span>
+                                    <span class="text-sm font-medium">45%</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-2">
+                                    <div class="bg-blue-600 h-2 rounded-full" style="width: 45%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
 
         <!-- Interface Preview Section -->
         <section class="py-12">
             <div class="max-w-7xl mx-auto px-4">
-                <h2 class="text-3xl font-bold mb-8 text-center">Interface Preview</h2>
-                <!-- Add preview content here -->
+                <h2 class="text-3xl font-bold mb-8 text-center">Interactive Learning Interface</h2>
+                <div class="bg-gray-50 p-6 rounded-lg shadow-md">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <div class="text-center p-4">
+                            <div class="bg-white p-4 rounded-lg shadow-sm mb-4">
+                                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253'%3E%3C/path%3E%3C/svg%3E" alt="Book Icon" class="w-12 h-12 mx-auto mb-4 text-blue-500">
+                                <h3 class="text-lg font-semibold">Digital Textbooks</h3>
+                                <p class="text-gray-600 mt-2">Interactive content with multimedia elements</p>
+                            </div>
+                        </div>
+                        <div class="text-center p-4">
+                            <div class="bg-white p-4 rounded-lg shadow-sm mb-4">
+                                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z'%3E%3C/path%3E%3C/svg%3E" alt="Quiz Icon" class="w-12 h-12 mx-auto mb-4 text-blue-500">
+                                <h3 class="text-lg font-semibold">Practice Quizzes</h3>
+                                <p class="text-gray-600 mt-2">Test your knowledge with interactive quizzes</p>
+                            </div>
+                        </div>
+                        <div class="text-center p-4">
+                            <div class="bg-white p-4 rounded-lg shadow-sm mb-4">
+                                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z'%3E%3C/path%3E%3C/svg%3E" alt="Progress Icon" class="w-12 h-12 mx-auto mb-4 text-blue-500">
+                                <h3 class="text-lg font-semibold">Progress Tracking</h3>
+                                <p class="text-gray-600 mt-2">Monitor your learning progress</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-center mt-8">
+                        <button onclick="startDemo()" class="px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transform hover:scale-105 transition-all">Try Demo</button>
+                    </div>
+                </div>
             </div>
         </section>
     </main>
@@ -113,5 +326,134 @@
             <p>&copy; <script>document.write(new Date().getFullYear())</script> Synapse Learn. All rights reserved.</p>
         </div>
     </footer>
+
+    <script src="/js/auth.js" defer></script>
+    <script src="/js/app.js" defer></script>
+    <script>
+        // Enhanced security measures
+        (function() {
+            const securityModule = {
+                init: function() {
+                    this.preventDevTools();
+                    this.disableShortcuts();
+                    this.protectConsole();
+                    this.preventCopyPaste();
+                    this.addDebugDetection();
+                    this.preventInspection();
+                },
+
+                preventDevTools: function() {
+                    // Detect DevTools
+                    let devtools = function() {};
+                    devtools.toString = function() {
+                        this.enabled = true;
+                        return '';
+                    }
+                    
+                    setInterval(function() {
+                        devtools.enabled = false;
+                        console.profile(devtools);
+                        console.profileEnd(devtools);
+                        if (devtools.enabled) {
+                            window.location.reload();
+                        }
+                    }, 1000);
+                },
+
+                disableShortcuts: function() {
+                    window.addEventListener('keydown', function(e) {
+                        // Prevent common dev tool shortcuts
+                        if (
+                            (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')) ||
+                            (e.ctrlKey && e.key === 'u') ||
+                            (e.key === 'F12') ||
+                            (e.ctrlKey && e.key === 's') ||
+                            (e.ctrlKey && e.key === 'p') ||
+                            (e.ctrlKey && e.key === 'g') ||
+                            (e.ctrlKey && e.key === 'k')
+                        ) {
+                            e.stopPropagation();
+                            e.preventDefault();
+                            return false;
+                        }
+                    }, true);
+                },
+
+                protectConsole: function() {
+                    // Disable console functionality
+                    const disableConsole = function() {
+                        Object.defineProperty(window, 'console', {
+                            value: {},
+                            writable: false,
+                            configurable: false
+                        });
+                    };
+
+                    // Clear and disable console
+                    console.clear();
+                    ['log', 'debug', 'info', 'warn', 'error', 'table', 'trace'].forEach(function(method) {
+                        console[method] = function() {};
+                    });
+
+                    setTimeout(disableConsole, 1000);
+                },
+
+                preventCopyPaste: function() {
+                    // Prevent copy/paste operations
+                    document.addEventListener('copy', function(e) {
+                        e.preventDefault();
+                        return false;
+                    });
+                    document.addEventListener('paste', function(e) {
+                        if (!e.target.matches('input, textarea')) {
+                            e.preventDefault();
+                            return false;
+                        }
+                    });
+                    document.addEventListener('cut', function(e) {
+                        e.preventDefault();
+                        return false;
+                    });
+                },
+
+                addDebugDetection: function() {
+                    // Detect debugging attempts
+                    setInterval(function() {
+                        const start = performance.now();
+                        debugger;
+                        const end = performance.now();
+                        if (end - start > 100) {
+                            window.location.reload();
+                        }
+                    }, 1000);
+                },
+
+                preventInspection: function() {
+                    // Prevent right-click
+                    document.addEventListener('contextmenu', function(e) {
+                        e.preventDefault();
+                        return false;
+                    }, true);
+
+                    // Prevent drag and drop
+                    document.addEventListener('dragstart', function(e) {
+                        e.preventDefault();
+                        return false;
+                    }, true);
+
+                    // Prevent selection
+                    document.addEventListener('selectstart', function(e) {
+                        if (!e.target.matches('input, textarea')) {
+                            e.preventDefault();
+                            return false;
+                        }
+                    }, true);
+                }
+            };
+
+            // Initialize security measures
+            securityModule.init();
+        })();
+    </script>
 </body>
 </html>
