@@ -1,0 +1,16 @@
+{
+  "name": "Synapse Learn",
+  "short_name": "Synapse Learn",
+  "description": "Your personalized learning journey for KSSM textbooks",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#3b82f6",
+  "icons": [
+    {
+      "src": "./img/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+} 

@@ -3,15 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://cdn.tailwindcss.com https://www.gstatic.com https://cdnjs.cloudflare.com blob:; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://www.gstatic.com https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://cdnjs.cloudflare.com; object-src blob:; img-src 'self' data: blob:;">
-    <link rel="icon" type="image/svg+xml" href="img/favicon.svg?v=2">
-    <link rel="icon" type="image/png" sizes="32x32" href="img/favicon.png?v=2">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://cdn.tailwindcss.com https://www.gstatic.com https://cdnjs.cloudflare.com blob:; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://www.gstatic.com https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://cdnjs.cloudflare.com; object-src blob:; img-src 'self' data: blob:; connect-src 'self' https://www.googleapis.com https://firestore.googleapis.com https://identitytoolkit.googleapis.com;">
+    <meta http-equiv="Strict-Transport-Security" content="max-age=31536000; includeSubDomains; preload">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+    <meta http-equiv="Permissions-Policy" content="interest-cohort=(), geolocation=(), microphone=(), camera=()">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+    <meta name="googlebot" content="noindex, nofollow">
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="./img/favicon.svg?v=20">
+    <link rel="icon" href="./img/favicon.svg">
+    <link rel="shortcut icon" href="./img/favicon.svg">
+    <link rel="apple-touch-icon" href="./img/favicon.svg">
+    <link rel="manifest" href="./manifest.json">
+    <!-- Data URI fallback for maximum compatibility -->
+    <link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMiIgaGVpZ2h0PSIzMiIgdmlld0JveD0iMCAwIDMyIDMyIj48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImJnR3JhZGllbnQiIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMTAwJSIgeTI9IjEwMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiMzYjgyZjYiLz48c3RvcCBvZmZzZXQ9IjUwJSIgc3R5bGU9InN0b3AtY29sb3I6IzhiNWNmNiIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3R5bGU9InN0b3AtY29sb3I6I2VjNDg5OSIvPjwvbGluZWFyR3JhZGllbnQ+PGZpbHRlciBpZD0ibGlnaHRidWxiR2xvdyIgeD0iLTUwJSIgeT0iLTUwJSIgd2lkdGg9IjIwMCUiIGhlaWdodD0iMjAwJSI+PGZlR2F1c3NpYW5CbHVyIHN0ZERldmlhdGlvbj0iMiIgcmVzdWx0PSJjb2xvcmVkQmx1ciIvPjxmZU1lcmdlPjxmZU1lcmdlTm9kZSBpbj0iY29sb3JlZEJsdXIiLz48ZmVNZXJnZU5vZGUgaW49IlNvdXJjZUdyYXBoaWMiLz48L2ZlTWVyZ2U+PC9maWx0ZXI+PGZpbHRlciBpZD0ibW9kZXJuU2hhZG93IiB4PSItNTAlIiB5PSItNTAlIiB3aWR0aD0iMjAwJSIgaGVpZ2h0PSIyMDAlIj48ZmVFcnJvclNoYWRvdyBkeD0iMCIgZHk9IjIiIHN0ZERldmlhdGlvbj0iMiIgZmxvb2QtY29sb3I9IiMwMDAwMDAiIGZsb29kLW9wYWNpdHk9IjAuMiIvPjwvZmlsdGVyPjxsaW5lYXJHcmFkaWVudCBpZD0iYnVsYkdyYWRpZW50IiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj48c3RvcCBvZmZzZXQ9IjAlIiBzdHlsZT0ic3RvcC1jb2xvcjojZmVmM2M3Ii8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdHlsZT0ic3RvcC1jb2xvcjojZmRlNjhhIi8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PGNpcmNsZSBjeD0iMTYiIGN5PSIxNiIgcj0iMTUiIGZpbGw9InVybCgjYmdHcmFkaWVudCkiIGZpbHRlcj0idXJsKCNtb2Rlcm5TaGFkb3cpIi8+PGcgZmlsdGVyPSJ1cmwoI2xpZ2h0YnVsYkdsb3cpIj48ZWxsaXBzZSBjeD0iMTYiIGN5PSIxMiIgcng9IjYiIHJ5PSI4IiBmaWxsPSJ1cmwoI2J1bGJHcmFkaWVudCkiIG9wYWNpdHk9IjAuOSIvPjxyZWN0IHg9IjE0IiB5PSIyMCIgd2lkdGg9IjQiIGhlaWdodD0iMyIgcng9IjEiIGZpbGw9IiNmYmJmMjQiLz48cGF0aCBkPSJNIDE2IDggUSAxNCAxMCAxNiAxMiBRIDE4IDEwIDE2IDgiIHN0cm9rZT0iI2Y1OWUwYiIgc3Ryb2tlLXdpZHRoPSIxIiBmaWxsPSJub25lIi8+PHBhdGggZD0iTSAxNiA4IFEgMTggMTAgMTYgMTIgUSAxNCAxMCAxNiA4IiBzdHJva2U9IiNmNTllMGIiIHN0cm9rZS13aWR0aD0iMSIgZmlsbD0ibm9uZSIvPjxsaW5lIHgxPSIxNiIgeTE9IjQiIHgyPSIxNiIgeTI9IjYiIHN0cm9rZT0iI2ZlZjNjNyIgc3Ryb2tlLXdpZHRoPSIyIiBvcGFjaXR5PSIwLjgiLz48bGluZSB4MT0iMTIiIHkxPSI2IiB4Mj0iMTQiIHkyPSI4IiBzdHJva2U9IiNmZWYzYzciIHN0cm9rZS13aWR0aD0iMS41IiBvcGFjaXR5PSIwLjYiLz48bGluZSB4MT0iMjAiIHkxPSI2IiB4Mj0iMTgiIHkyPSI4IiBzdHJva2U9IiNmZWYzYzciIHN0cm9rZS13aWR0aD0iMS41IiBvcGFjaXR5PSIwLjYiLz48L2c+PGcgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjkpIj48Y2lyY2xlIGN4PSIxMCIgY3k9IjE4IiByPSIxLjUiLz48Y2lyY2xlIGN4PSIyMiIgY3k9IjE4IiByPSIxLjUiLz48Y2lyY2xlIGN4PSIxMiIgY3k9IjIyIiByPSIxIi8+PGNpcmNsZSBjeD0iMjAiIGN5PSIyMiIgcj0iMSIvPjxsaW5lIHgxPSIxMCIgeTE9IjE4IiB4Mj0iMTIiIHkyPSIyMiIgc3Ryb2tlPSJyZ2JhKDI1NSwyNTUsMjU1LDAuNykiIHN0cm9rZS13aWR0aD0iMSIvPjxsaW5lIHgxPSIyMiIgeTE9IjE4IiB4Mj0iMjAiIHkyPSIyMiIgc3Ryb2tlPSJyZ2JhKDI1NSwyNTUsMjU1LDAuNykiIHN0cm9rZS13aWR0aD0iMSIvPjxsaW5lIHgxPSIxMiIgeTE9IjIyIiB4Mj0iMjAiIHkyPSIyMiIgc3Ryb2tlPSJyZ2JhKDI1NSwyNTUsMjU1LDAuNSkiIHN0cm9rZS13aWR0aD0iMC44Ii8+PGxpbmUgeDE9IjEwIiB5MT0iMTgiIHgyPSIyMiIgeTI9IjE4IiBzdHJva2U9InJnYmEoMjU1LDI1NSwyNTUsMC41KSIgc3Ryb2tlLXdpZHRoPSIwLjgiLz48L2c+PGNpcmNsZSBjeD0iOCIgY3k9IjgiIHI9IjAuOCIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjgpIi8+PGNpcmNsZSBjeD0iMjQiIGN5PSI4IiByPSIwLjgiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC44KSIvPjxjaXJjbGUgY3g9IjgiIGN5PSIyNCIgcj0iMC42IiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuNikiLz48Y2lyY2xlIGN4PSIyNCIgY3k9IjI0IiByPSIwLjYiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC42KSIvPjwvc3ZnPg==">
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta http-equiv="X-Frame-Options" content="DENY">
     <meta http-equiv="Permissions-Policy" content="interest-cohort=()">
     <meta name="referrer" content="no-referrer">
     <meta name="robots" content="noindex, nofollow">
-    <title>Synapse Learn</title>
+    <title>Synapse Learn | SPM</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.x.x/firebase-app-compat.js"></script>
@@ -404,6 +418,7 @@
         </div>
     </footer>
 
+    <script src="/js/security.js" type="module" defer></script>
     <script src="/js/auth.js" defer></script>
     <script src="/js/app.js" defer></script>
     <script>
