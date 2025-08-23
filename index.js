@@ -25,11 +25,11 @@ import {
 // IMPORTANT: In a real-world application, these values should not be stored here.
 // They would be kept in secure environment variables on a backend server.
 const firebaseConfig = {
-  apiKey: "AIzaSyBDlJw_vduk8859AlbROe2ZC3QHiJ_Effc",
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
   authDomain: "synapse-learn.firebaseapp.com",
   projectId: "synapse-learn",
   storageBucket: "synapse-learn.appspot.com",
-  messagingSenderId: "959946255674",
+  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
   appId: "1:959946255674:web:81a9fd7b0272abd8a2b403",
 };
 
